@@ -6,6 +6,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import com.fabien.restaurant_booking_api.customer.domain.Customer;
 import com.fabien.restaurant_booking_api.restaurant.domain.Restaurant;
 import com.fabien.restaurant_booking_api.table.domain.DiningTable;
+import com.fabien.restaurant_booking_api.table.domain.DiningTableStatus;
 import java.time.LocalDate;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -90,7 +91,7 @@ class BookingRepositoryTest {
     assertThat(saved.getDiningTable()).isNotNull();
     assertThat(saved.getDiningTable().getId()).isEqualTo(table.getId());
     assertThat(saved.getDiningTable().getCapacity()).isEqualTo(4);
-    assertThat(saved.getDiningTable().getStatus()).isEqualTo("AVAILABLE");
+    assertThat(saved.getDiningTable().getStatus()).isEqualTo(DiningTableStatus.AVAILABLE);
 
     assertThat(saved.getCustomer()).isNotNull();
     assertThat(saved.getCustomer().getId()).isEqualTo(customer.getId());
@@ -104,7 +105,7 @@ class BookingRepositoryTest {
     //Given
     Customer customer = createAndPersistCustomer();
     DiningTable table = createAndPersistDiningTable();
-    Booking firstBooking = createAndPersitBooking(customer, table);
+    createAndPersitBooking(customer, table);
 
     Booking duplicateBooking = createTestBooking(customer, table);
 
@@ -174,7 +175,7 @@ class BookingRepositoryTest {
     DiningTable diningTable = new DiningTable();
     diningTable.setRestaurant(restaurant);
     diningTable.setCapacity(4);
-    diningTable.setStatus("AVAILABLE");
+    diningTable.setStatus(DiningTableStatus.AVAILABLE);
     return diningTable;
   }
 

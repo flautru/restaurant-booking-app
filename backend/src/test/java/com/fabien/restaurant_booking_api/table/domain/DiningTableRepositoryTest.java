@@ -24,7 +24,7 @@ class DiningTableRepositoryTest {
   void save_should_generate_id_and_persist_dining_table() {
     // Given
     Restaurant restaurant = createAndPersistRestaurant();
-    DiningTable table = createTestDiningTable(restaurant, 4, "AVAILABLE");
+    DiningTable table = createTestDiningTable(restaurant, 4, DiningTableStatus.AVAILABLE);
 
     // When
     DiningTable saved = diningTableRepository.save(table);
@@ -32,14 +32,14 @@ class DiningTableRepositoryTest {
     // Then
     assertThat(saved.getId()).isNotNull();
     assertThat(saved.getCapacity()).isEqualTo(4);
-    assertThat(saved.getStatus()).isEqualTo("AVAILABLE");
+    assertThat(saved.getStatus()).isEqualTo(DiningTableStatus.AVAILABLE);
   }
 
   @Test
   void save_should_persist_dining_table_with_restaurant_relation() {
     // Given
     Restaurant restaurant = createAndPersistRestaurant();
-    DiningTable table = createTestDiningTable(restaurant, 6, "MAINTENANCE");
+    DiningTable table = createTestDiningTable(restaurant, 6, DiningTableStatus.MAINTENANCE);
 
     // When
     DiningTable saved = diningTableRepository.save(table);
@@ -54,7 +54,7 @@ class DiningTableRepositoryTest {
   void findById_should_return_dining_table_when_exists() {
     // Given
     Restaurant restaurant = createAndPersistRestaurant();
-    DiningTable table = createTestDiningTable(restaurant, 8, "AVAILABLE");
+    DiningTable table = createTestDiningTable(restaurant, 8, DiningTableStatus.AVAILABLE);
     DiningTable saved = entityManager.persistAndFlush(table);
 
     // When
@@ -63,7 +63,7 @@ class DiningTableRepositoryTest {
     // Then
     assertThat(found).isPresent();
     assertThat(found.get().getCapacity()).isEqualTo(8);
-    assertThat(found.get().getStatus()).isEqualTo("AVAILABLE");
+    assertThat(found.get().getStatus()).isEqualTo(DiningTableStatus.AVAILABLE);
   }
 
   @Test
@@ -82,7 +82,7 @@ class DiningTableRepositoryTest {
   void findById_should_load_restaurant_relation_when_exists() {
     // Given
     Restaurant restaurant = createAndPersistRestaurant();
-    DiningTable table = createTestDiningTable(restaurant, 2, "MAINTENANCE");
+    DiningTable table = createTestDiningTable(restaurant, 2, DiningTableStatus.MAINTENANCE);
     DiningTable saved = entityManager.persistAndFlush(table);
 
     // When
@@ -107,7 +107,8 @@ class DiningTableRepositoryTest {
     return entityManager.persistAndFlush(restaurant);
   }
 
-  private DiningTable createTestDiningTable(Restaurant restaurant, int capacity, String status) {
+  private DiningTable createTestDiningTable(Restaurant restaurant, int capacity,
+      DiningTableStatus status) {
     DiningTable table = new DiningTable();
     table.setCapacity(capacity);
     table.setStatus(status);

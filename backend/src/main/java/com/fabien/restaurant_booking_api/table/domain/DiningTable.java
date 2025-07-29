@@ -2,6 +2,8 @@ package com.fabien.restaurant_booking_api.table.domain;
 
 import com.fabien.restaurant_booking_api.restaurant.domain.Restaurant;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -21,7 +23,8 @@ public class DiningTable {
 
   private Integer capacity;
 
-  private String status;
+  @Enumerated(EnumType.STRING)
+  private DiningTableStatus status;
 
   @ManyToOne
   @JoinColumn(name = "restaurant_id")

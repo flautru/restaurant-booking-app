@@ -37,4 +37,10 @@ public class RestaurantService {
 
     restaurantRepository.deleteById(id);
   }
+
+  public void validateExists(Long restaurantId) {
+    if (!restaurantRepository.existsById(restaurantId)) {
+      throw new EntityNotFoundException("Restaurant not found with id: " + restaurantId);
+    }
+  }
 }

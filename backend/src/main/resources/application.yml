@@ -18,3 +18,9 @@ logging:
   level:
     org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+
+restaurant:
+  table:
+    capacity:
+      min: 2
+      max: 8
