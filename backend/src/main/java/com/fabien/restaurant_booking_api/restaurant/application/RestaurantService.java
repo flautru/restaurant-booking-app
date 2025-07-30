@@ -40,7 +40,7 @@ public class RestaurantService {
 
   public void validateExists(Long restaurantId) {
     if (!restaurantRepository.existsById(restaurantId)) {
-      throw new EntityNotFoundException("Restaurant not found with id: " + restaurantId);
+      throw new EntityNotFoundException("Restaurant not found with id : " + restaurantId);
     }
   }
 }

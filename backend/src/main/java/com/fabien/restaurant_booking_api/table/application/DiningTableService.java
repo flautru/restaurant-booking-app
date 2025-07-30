@@ -28,7 +28,7 @@ public class DiningTableService {
 
   public DiningTable findById(Long id) {
     return diningTableRepository.findById(id)
-        .orElseThrow(() -> new EntityNotFoundException("Dining table not found with id " + id));
+        .orElseThrow(() -> new EntityNotFoundException("Dining table not found with id : " + id));
   }
 
   public DiningTable create(DiningTable diningTable) {

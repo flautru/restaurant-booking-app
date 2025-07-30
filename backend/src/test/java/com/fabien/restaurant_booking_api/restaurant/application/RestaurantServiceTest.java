@@ -88,16 +88,16 @@ class RestaurantServiceTest {
   @Test
   void findById_should_throw_exception_when_not_exists() {
     //Given
-    Long noExistId = 999L;
+    Long nonExistentId = 999L;
     //When
-    when(restaurantRepository.findById(noExistId)).thenReturn(Optional.empty());
+    when(restaurantRepository.findById(nonExistentId)).thenReturn(Optional.empty());
 
     final EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () -> {
-      restaurantService.findById(noExistId);
+      restaurantService.findById(nonExistentId);
     });
 
-    assertThat(exception.getMessage()).isEqualTo("Restaurant not found with id : " + noExistId);
-    verify(restaurantRepository).findById(noExistId);
+    assertThat(exception.getMessage()).isEqualTo("Restaurant not found with id : " + nonExistentId);
+    verify(restaurantRepository).findById(nonExistentId);
   }
 
   @Test
@@ -144,15 +144,15 @@ class RestaurantServiceTest {
   @Test
   void update_should_throw_exception_when_not_exists() {
     //Given
-    Long noExistId = 999L;
+    Long nonExistentId = 999L;
     Restaurant input = createTestRestaurant();
     //When
-    when(restaurantRepository.findById(noExistId)).thenReturn(Optional.empty());
+    when(restaurantRepository.findById(nonExistentId)).thenReturn(Optional.empty());
 
-    assertThatThrownBy(() -> restaurantService.update(noExistId, input))
+    assertThatThrownBy(() -> restaurantService.update(nonExistentId, input))
         .isInstanceOf(EntityNotFoundException.class)
-        .hasMessage("Restaurant not found with id : " + noExistId);
-    verify(restaurantRepository).findById(noExistId);
+        .hasMessage("Restaurant not found with id : " + nonExistentId);
+    verify(restaurantRepository).findById(nonExistentId);
     verify(restaurantRepository, never()).save(any(Restaurant.class));
   }
 
@@ -174,40 +174,15 @@ class RestaurantServiceTest {
   @Test
   void deleteById_should_throw_exception_when_not_exists() {
     //Given
-    Long noExistId = 999L;
+    Long nonExistentId = 999L;
     //When
-    when(restaurantRepository.findById(noExistId)).thenReturn(Optional.empty());
+    when(restaurantRepository.findById(nonExistentId)).thenReturn(Optional.empty());
 
     //Then
-    assertThatThrownBy(() -> restaurantService.deleteById(noExistId))
+    assertThatThrownBy(() -> restaurantService.deleteById(nonExistentId))
         .isInstanceOf(EntityNotFoundException.class)
-        .hasMessage("Restaurant not found with id : " + noExistId);
-    verify(restaurantRepository).findById(noExistId);
+        .hasMessage("Restaurant not found with id : " + nonExistentId);
+    verify(restaurantRepository).findById(nonExistentId);
     verify(restaurantRepository, never()).deleteById(1L);
   }
-
-//  private Restaurant createTestRestaurant(String name, String address, String phoneNumber) {
-//    Restaurant restaurant = new Restaurant();
-//    restaurant.setName(name);
-//    restaurant.setAddress(address);
-//    restaurant.setPhoneNumber(phoneNumber);
-//
-//    return restaurant;
-//  }
-//
-//  private Restaurant createTestRestaurantWithId(Long id, String name, String address,
-//      String phoneNumber) {
-//    Restaurant restaurant = createTestRestaurant(name, address, phoneNumber);
-//    restaurant.setId(id);
-//
-//    return restaurant;
-//  }
-//
-//  private Restaurant createTestRestaurant() {
-//    return createTestRestaurant("Test Restaurant", "12 rue Test", "99-99-99-99-99");
-//  }
-//
-//  private Restaurant createTestRestaurantWithId(Long id) {
-//    return createTestRestaurantWithId(id, "Test Restaurant", "12 rue Test", "99-99-99-99-99");
-//  }
 }
