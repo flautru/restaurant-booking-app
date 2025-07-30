@@ -1,5 +1,6 @@
 package com.fabien.restaurant_booking_api.restaurant.application;
 
+import static com.fabien.restaurant_booking_api.shared.utils.TestDataBuilder.createTestRestaurantWithId;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.fabien.restaurant_booking_api.restaurant.domain.Restaurant;
@@ -73,21 +74,4 @@ class RestaurantMapperTest {
     return request;
   }
 
-  // Duplication de code en local pour le moment a voir évolution pour faire un helper
-  private Restaurant createTestRestaurant(String name, String address, String phoneNumber) {
-    Restaurant restaurant = new Restaurant();
-    restaurant.setName(name);
-    restaurant.setAddress(address);
-    restaurant.setPhoneNumber(phoneNumber);
-
-    return restaurant;
-  }
-
-  private Restaurant createTestRestaurantWithId(Long id, String name, String address,
-      String phoneNumber) {
-    Restaurant restaurant = createTestRestaurant(name, address, phoneNumber);
-    restaurant.setId(id);
-
-    return restaurant;
-  }
 }

@@ -1,5 +1,6 @@
 package com.fabien.restaurant_booking_api.restaurant.domain;
 
+import static com.fabien.restaurant_booking_api.shared.utils.TestDataBuilder.createTestRestaurant;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import java.util.Optional;
@@ -60,13 +61,5 @@ class RestaurantRepositoryTest {
 
     // Then
     assertThat(found).isEmpty();
-  }
-
-  private Restaurant createTestRestaurant(String name, String address, String phoneNumber) {
-    Restaurant restaurant = new Restaurant();
-    restaurant.setName(name);
-    restaurant.setAddress(address);
-    restaurant.setPhoneNumber(phoneNumber);
-    return restaurant;
   }
 }

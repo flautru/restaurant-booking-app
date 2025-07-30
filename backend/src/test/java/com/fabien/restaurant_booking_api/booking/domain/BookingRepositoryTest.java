@@ -17,6 +17,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.dao.DataIntegrityViolationException;
 
+//TODO: Refactorisé avec TestDataBuilder en faisant attention avec les createAndPersist lors de la création de l'enum pour status
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = Replace.NONE)
 class BookingRepositoryTest {

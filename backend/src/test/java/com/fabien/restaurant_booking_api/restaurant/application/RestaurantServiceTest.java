@@ -1,5 +1,7 @@
 package com.fabien.restaurant_booking_api.restaurant.application;
 
+import static com.fabien.restaurant_booking_api.shared.utils.TestDataBuilder.createTestRestaurant;
+import static com.fabien.restaurant_booking_api.shared.utils.TestDataBuilder.createTestRestaurantWithId;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -184,28 +186,28 @@ class RestaurantServiceTest {
     verify(restaurantRepository, never()).deleteById(1L);
   }
 
-  private Restaurant createTestRestaurant(String name, String address, String phoneNumber) {
-    Restaurant restaurant = new Restaurant();
-    restaurant.setName(name);
-    restaurant.setAddress(address);
-    restaurant.setPhoneNumber(phoneNumber);
-
-    return restaurant;
-  }
-
-  private Restaurant createTestRestaurantWithId(Long id, String name, String address,
-      String phoneNumber) {
-    Restaurant restaurant = createTestRestaurant(name, address, phoneNumber);
-    restaurant.setId(id);
-
-    return restaurant;
-  }
-
-  private Restaurant createTestRestaurant() {
-    return createTestRestaurant("Test Restaurant", "12 rue Test", "99-99-99-99-99");
-  }
-
-  private Restaurant createTestRestaurantWithId(Long id) {
-    return createTestRestaurantWithId(id, "Test Restaurant", "12 rue Test", "99-99-99-99-99");
-  }
+//  private Restaurant createTestRestaurant(String name, String address, String phoneNumber) {
+//    Restaurant restaurant = new Restaurant();
+//    restaurant.setName(name);
+//    restaurant.setAddress(address);
+//    restaurant.setPhoneNumber(phoneNumber);
+//
+//    return restaurant;
+//  }
+//
+//  private Restaurant createTestRestaurantWithId(Long id, String name, String address,
+//      String phoneNumber) {
+//    Restaurant restaurant = createTestRestaurant(name, address, phoneNumber);
+//    restaurant.setId(id);
+//
+//    return restaurant;
+//  }
+//
+//  private Restaurant createTestRestaurant() {
+//    return createTestRestaurant("Test Restaurant", "12 rue Test", "99-99-99-99-99");
+//  }
+//
+//  private Restaurant createTestRestaurantWithId(Long id) {
+//    return createTestRestaurantWithId(id, "Test Restaurant", "12 rue Test", "99-99-99-99-99");
+//  }
 }

@@ -1,5 +1,6 @@
 package com.fabien.restaurant_booking_api.restaurant.infrastructure;
 
+import static com.fabien.restaurant_booking_api.shared.utils.TestDataBuilder.createTestRestaurant;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.matchesPattern;
@@ -47,7 +48,8 @@ class RestaurantControllerIntegrationTest {
   @Test
   void findAll_should_return_all_restaurants_with_200() throws Exception {
     // Given
-    Restaurant restaurant1 = createTestRestaurant("Chez Test", "15 rue Test", "01-11-11-11-11");
+    Restaurant restaurant1 = createTestRestaurant("Chez Test", "15 rue Test",
+        "01-11-11-11-11");
     Restaurant restaurant2 = createTestRestaurant("Le Testrot", "20 avenue Test", "01-22-22-22-22");
 
     restaurantRepository.save(restaurant1);
@@ -284,11 +286,4 @@ class RestaurantControllerIntegrationTest {
         .andExpect(status().isNotFound());
   }
 
-  private Restaurant createTestRestaurant(String name, String address, String phoneNumber) {
-    Restaurant restaurant = new Restaurant();
-    restaurant.setName(name);
-    restaurant.setAddress(address);
-    restaurant.setPhoneNumber(phoneNumber);
-    return restaurant;
-  }
 }
