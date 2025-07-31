@@ -72,6 +72,19 @@ public class TestDataBuilder {
     return customer;
   }
 
+  public static Customer createTestCustomerWithId(Long id, String name, String email,
+      String phoneNumber) {
+    Customer customer = createTestCustomer(name, email, phoneNumber);
+    customer.setId(id);
+    return customer;
+  }
+
+  public static Customer createTestCustomerWithId(Long id) {
+    Customer customer = createTestCustomer();
+    customer.setId(id);
+    return customer;
+  }
+
   public static Customer createTestCustomer() {
     return createTestCustomer("Test Customer", "test@test.com", "99-99-99-99-99");
   }

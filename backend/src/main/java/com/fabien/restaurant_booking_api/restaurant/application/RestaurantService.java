@@ -34,7 +34,6 @@ public class RestaurantService {
 
   public void deleteById(Long id) {
     findById(id);
-
     restaurantRepository.deleteById(id);
   }
 
