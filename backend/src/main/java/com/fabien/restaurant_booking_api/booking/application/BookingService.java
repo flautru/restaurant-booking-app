@@ -84,6 +84,7 @@ public class BookingService {
     }
   }
 
+  //TODO : ACTUELLEMENT NE PREND PAS EN COMPTE LE STATUT DE LA RESERVATION (SI RESA CANCELED IMPOSSIBLE DE QUAND MEME RESA
   private void validateTableAvailability(Booking booking) {
     boolean exists = bookingRepository.existsByDiningTableIdAndDateAndTimeSlotType(
         booking.getDiningTable().getId(),

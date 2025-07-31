@@ -36,7 +36,7 @@ class BookingRepositoryTest {
     Customer customer = createAndPersistCustomer();
     DiningTable table = createAndPersistDiningTable();
     Booking booking = createTestBooking(table, customer, LocalDate.of(2025, 8, 15),
-        TimeSlotType.DINNER_19H21H);
+        TimeSlotType.DINNER_19H21H, BookingStatus.FINISH);
 
     // When
     Booking saved = bookingRepository.save(booking);
@@ -54,7 +54,7 @@ class BookingRepositoryTest {
     Customer customer = createAndPersistCustomer();
     DiningTable table = createAndPersistDiningTable();
     Booking booking = createTestBooking(table, customer, LocalDate.of(2025, 8, 20),
-        TimeSlotType.LUNCH_12H14H);
+        TimeSlotType.LUNCH_12H14H, BookingStatus.FINISH);
     Booking saved = entityManager.persistAndFlush(booking);
 
     // When
@@ -85,7 +85,7 @@ class BookingRepositoryTest {
     Customer customer = createAndPersistCustomer();
     DiningTable table = createAndPersistDiningTable();
     Booking booking = createTestBooking(table, customer, LocalDate.of(2025, 8, 25),
-        TimeSlotType.DINNER_21H23H);
+        TimeSlotType.DINNER_21H23H, BookingStatus.FINISH);
 
     // When
     Booking saved = bookingRepository.save(booking);
@@ -111,10 +111,12 @@ class BookingRepositoryTest {
     LocalDate bookingDate = LocalDate.of(2025, 8, 30);
     TimeSlotType timeSlot = TimeSlotType.LUNCH_14H16H;
 
-    Booking booking1 = createTestBooking(table, customer1, bookingDate, timeSlot);
+    Booking booking1 = createTestBooking(table, customer1, bookingDate, timeSlot,
+        BookingStatus.FINISH);
     entityManager.persistAndFlush(booking1);
 
-    Booking booking2 = createTestBooking(table, customer2, bookingDate, timeSlot);
+    Booking booking2 = createTestBooking(table, customer2, bookingDate, timeSlot,
+        BookingStatus.FINISH);
 
     // When & Then
     assertThatThrownBy(() -> {
@@ -131,7 +133,8 @@ class BookingRepositoryTest {
     LocalDate bookingDate = LocalDate.of(2025, 9, 5);
     TimeSlotType timeSlot = TimeSlotType.DINNER_19H21H;
 
-    Booking existingBooking = createTestBooking(table, customer, bookingDate, timeSlot);
+    Booking existingBooking = createTestBooking(table, customer, bookingDate, timeSlot,
+        BookingStatus.FINISH);
     entityManager.persistAndFlush(existingBooking);
 
     // When
@@ -166,7 +169,8 @@ class BookingRepositoryTest {
     LocalDate bookingDate = LocalDate.of(2025, 9, 15);
     TimeSlotType timeSlot = TimeSlotType.DINNER_21H23H;
 
-    Booking booking = createTestBooking(table1, customer, bookingDate, timeSlot);
+    Booking booking = createTestBooking(table1, customer, bookingDate, timeSlot,
+        BookingStatus.FINISH);
     entityManager.persistAndFlush(booking);
 
     // When
@@ -186,7 +190,8 @@ class BookingRepositoryTest {
     LocalDate differentDate = LocalDate.of(2025, 9, 21);
     TimeSlotType timeSlot = TimeSlotType.LUNCH_14H16H;
 
-    Booking booking = createTestBooking(table, customer, existingDate, timeSlot);
+    Booking booking = createTestBooking(table, customer, existingDate, timeSlot,
+        BookingStatus.FINISH);
     entityManager.persistAndFlush(booking);
 
     // When
@@ -206,7 +211,8 @@ class BookingRepositoryTest {
     TimeSlotType existingSlot = TimeSlotType.LUNCH_12H14H;
     TimeSlotType differentSlot = TimeSlotType.LUNCH_14H16H;
 
-    Booking booking = createTestBooking(table, customer, bookingDate, existingSlot);
+    Booking booking = createTestBooking(table, customer, bookingDate, existingSlot,
+        BookingStatus.FINISH);
     entityManager.persistAndFlush(booking);
 
     // When
@@ -225,7 +231,8 @@ class BookingRepositoryTest {
     LocalDate bookingDate = LocalDate.of(2025, 10, 1);
     TimeSlotType timeSlot = TimeSlotType.DINNER_19H21H;
 
-    Booking existingBooking = createTestBooking(table, customer, bookingDate, timeSlot);
+    Booking existingBooking = createTestBooking(table, customer, bookingDate, timeSlot,
+        BookingStatus.FINISH);
     Booking saved = entityManager.persistAndFlush(existingBooking);
 
     // When
@@ -245,10 +252,12 @@ class BookingRepositoryTest {
     LocalDate bookingDate = LocalDate.of(2025, 10, 5);
     TimeSlotType timeSlot = TimeSlotType.DINNER_21H23H;
 
-    Booking booking1 = createTestBooking(table, customer1, bookingDate, timeSlot);
+    Booking booking1 = createTestBooking(table, customer1, bookingDate, timeSlot,
+        BookingStatus.FINISH);
     Booking saved1 = entityManager.persistAndFlush(booking1);
 
-    Booking booking2 = createTestBooking(table, customer2, bookingDate, TimeSlotType.DINNER_19H21H);
+    Booking booking2 = createTestBooking(table, customer2, bookingDate, TimeSlotType.DINNER_19H21H,
+        BookingStatus.FINISH);
     Booking saved2 = entityManager.persistAndFlush(booking2);
 
     // When
@@ -267,7 +276,8 @@ class BookingRepositoryTest {
     LocalDate bookingDate = LocalDate.of(2025, 10, 10);
     TimeSlotType timeSlot = TimeSlotType.LUNCH_12H14H;
 
-    Booking booking = createTestBooking(table, customer, bookingDate, timeSlot);
+    Booking booking = createTestBooking(table, customer, bookingDate, timeSlot,
+        BookingStatus.FINISH);
     Booking saved = entityManager.persistAndFlush(booking);
 
     // When

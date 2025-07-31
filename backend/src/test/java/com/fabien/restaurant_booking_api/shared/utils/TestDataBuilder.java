@@ -93,19 +93,37 @@ public class TestDataBuilder {
   // ===== BOOKING BUILDERS (pour plus tard) =====
 
   public static Booking createTestBooking(DiningTable table, Customer customer, LocalDate date,
-      TimeSlotType timeSlot) {
+      TimeSlotType timeSlot, BookingStatus bookingStatus) {
     Booking booking = new Booking();
     booking.setDiningTable(table);
     booking.setCustomer(customer);
     booking.setDate(date);
     booking.setTimeSlotType(timeSlot);
-    booking.setStatus(BookingStatus.FINISH);
+    booking.setStatus(bookingStatus);
+    return booking;
+  }
+
+  public static Booking createTestBookingWithId(Long id, DiningTable table, Customer customer,
+      LocalDate date,
+      TimeSlotType timeSlot, BookingStatus bookingStatus) {
+    Booking booking = createTestBooking(table, customer, date, timeSlot, bookingStatus);
+    booking.setId(id);
+    return booking;
+  }
+
+  public static Booking createTestBookingWithId(Long id) {
+    DiningTable table = createTestDiningTable();
+    Customer customer = createTestCustomer();
+    Booking booking = createTestBooking(table, customer, LocalDate.now(),
+        TimeSlotType.LUNCH_12H14H, BookingStatus.FINISH);
+    booking.setId(id);
     return booking;
   }
 
   public static Booking createTestBooking() {
     DiningTable table = createTestDiningTable();
     Customer customer = createTestCustomer();
-    return createTestBooking(table, customer, LocalDate.now(), TimeSlotType.LUNCH_12H14H);
+    return createTestBooking(table, customer, LocalDate.now(), TimeSlotType.LUNCH_12H14H,
+        BookingStatus.FINISH);
   }
 }
