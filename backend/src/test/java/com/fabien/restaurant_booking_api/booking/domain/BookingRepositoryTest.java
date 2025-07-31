@@ -1,7 +1,11 @@
 package com.fabien.restaurant_booking_api.booking.domain;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static com.fabien.restaurant_booking_api.shared.utils.TestDataBuilder.createTestBooking;
+import static com.fabien.restaurant_booking_api.shared.utils.TestDataBuilder.createTestCustomer;
+import static com.fabien.restaurant_booking_api.shared.utils.TestDataBuilder.createTestDiningTable;
+import static com.fabien.restaurant_booking_api.shared.utils.TestDataBuilder.createTestRestaurant;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.fabien.restaurant_booking_api.customer.domain.Customer;
 import com.fabien.restaurant_booking_api.restaurant.domain.Restaurant;
@@ -12,14 +16,12 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.dao.DataIntegrityViolationException;
 
-//TODO: Refactorisé avec TestDataBuilder en faisant attention avec les createAndPersist lors de la création de l'enum pour status
 @DataJpaTest
-@AutoConfigureTestDatabase(replace = Replace.NONE)
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class BookingRepositoryTest {
 
   @Autowired
@@ -30,40 +32,39 @@ class BookingRepositoryTest {
 
   @Test
   void save_should_generate_id_and_persist_booking() {
-    //Given
+    // Given
     Customer customer = createAndPersistCustomer();
     DiningTable table = createAndPersistDiningTable();
-    Booking booking = createTestBooking(LocalDate.of(2024, 11, 14), TimeSlotType.DINNER_19H21H,
-        "CONFIRMED",
-        customer, table);
+    Booking booking = createTestBooking(table, customer, LocalDate.of(2025, 8, 15),
+        TimeSlotType.DINNER_19H21H);
 
-    //When
+    // When
     Booking saved = bookingRepository.save(booking);
 
-    //Then
+    // Then
     assertThat(saved.getId()).isNotNull();
-    assertThat(saved.getDate()).isEqualTo(LocalDate.of(2024, 11, 14));
+    assertThat(saved.getDate()).isEqualTo(LocalDate.of(2025, 8, 15));
     assertThat(saved.getTimeSlotType()).isEqualTo(TimeSlotType.DINNER_19H21H);
-    assertThat(saved.getStatus()).isEqualTo("CONFIRMED");
-
+    assertThat(saved.getStatus()).isEqualTo(BookingStatus.FINISH);
   }
 
   @Test
   void findById_should_return_booking_when_exists() {
-    //Given
+    // Given
     Customer customer = createAndPersistCustomer();
     DiningTable table = createAndPersistDiningTable();
-    Booking saved = createAndPersitBooking(customer, table);
+    Booking booking = createTestBooking(table, customer, LocalDate.of(2025, 8, 20),
+        TimeSlotType.LUNCH_12H14H);
+    Booking saved = entityManager.persistAndFlush(booking);
 
-    //When
+    // When
     Optional<Booking> found = bookingRepository.findById(saved.getId());
 
-    //Then
+    // Then
     assertThat(found).isPresent();
-    assertThat(found.get().getDate()).isEqualTo(LocalDate.of(2025, 7, 28));
-    assertThat(found.get().getStatus()).isEqualTo("CONFIRMED");
+    assertThat(found.get().getDate()).isEqualTo(LocalDate.of(2025, 8, 20));
     assertThat(found.get().getTimeSlotType()).isEqualTo(TimeSlotType.LUNCH_12H14H);
-
+    assertThat(found.get().getStatus()).isEqualTo(BookingStatus.FINISH);
   }
 
   @Test
@@ -80,12 +81,13 @@ class BookingRepositoryTest {
 
   @Test
   void save_should_persist_booking_with_dining_table_and_customer_relations() {
-    //Given
+    // Given
     Customer customer = createAndPersistCustomer();
     DiningTable table = createAndPersistDiningTable();
-    Booking booking = createTestBooking(LocalDate.of(2025, 7, 20), TimeSlotType.DINNER_21H23H,
-        "PENDING", customer, table);
+    Booking booking = createTestBooking(table, customer, LocalDate.of(2025, 8, 25),
+        TimeSlotType.DINNER_21H23H);
 
+    // When
     Booking saved = bookingRepository.save(booking);
 
     // Then
@@ -96,110 +98,201 @@ class BookingRepositoryTest {
 
     assertThat(saved.getCustomer()).isNotNull();
     assertThat(saved.getCustomer().getId()).isEqualTo(customer.getId());
-    assertThat(saved.getCustomer().getName()).isEqualTo(customer.getName());
-    assertThat(saved.getCustomer().getEmail()).isEqualTo(customer.getEmail());
-    assertThat(saved.getCustomer().getPhoneNumber()).isEqualTo(customer.getPhoneNumber());
+    assertThat(saved.getCustomer().getName()).isEqualTo("Test Customer");
+    assertThat(saved.getCustomer().getPhoneNumber()).isEqualTo("99-99-99-99-99");
   }
 
   @Test
   void save_should_throw_exception_when_duplicate_booking_same_table_date_timeslot() {
-    //Given
-    Customer customer = createAndPersistCustomer();
+    // Given
+    Customer customer1 = createAndPersistCustomer();
+    Customer customer2 = createAndPersistCustomer("MarieTest", "test@test.com", "00-11-22-33-44");
     DiningTable table = createAndPersistDiningTable();
-    createAndPersitBooking(customer, table);
+    LocalDate bookingDate = LocalDate.of(2025, 8, 30);
+    TimeSlotType timeSlot = TimeSlotType.LUNCH_14H16H;
 
-    Booking duplicateBooking = createTestBooking(customer, table);
+    Booking booking1 = createTestBooking(table, customer1, bookingDate, timeSlot);
+    entityManager.persistAndFlush(booking1);
+
+    Booking booking2 = createTestBooking(table, customer2, bookingDate, timeSlot);
 
     // When & Then
     assertThatThrownBy(() -> {
-      bookingRepository.save(duplicateBooking);
+      bookingRepository.save(booking2);
       entityManager.flush();
-    })
-        .isInstanceOf(DataIntegrityViolationException.class);
-
+    }).isInstanceOf(DataIntegrityViolationException.class);
   }
 
   @Test
-  void save_should_persist_time_slot_type_as_string() {
+  void existsByDiningTableIdAndDateAndTimeSlotType_should_return_true_when_booking_exists() {
     // Given
     Customer customer = createAndPersistCustomer();
     DiningTable table = createAndPersistDiningTable();
-    Booking booking = createTestBooking(LocalDate.now(), TimeSlotType.LUNCH_14H16H, "CONFIRMED",
-        customer, table);
+    LocalDate bookingDate = LocalDate.of(2025, 9, 5);
+    TimeSlotType timeSlot = TimeSlotType.DINNER_19H21H;
+
+    Booking existingBooking = createTestBooking(table, customer, bookingDate, timeSlot);
+    entityManager.persistAndFlush(existingBooking);
 
     // When
-    Booking saved = bookingRepository.save(booking);
+    boolean exists = bookingRepository.existsByDiningTableIdAndDateAndTimeSlotType(
+        table.getId(), bookingDate, timeSlot);
 
     // Then
-    assertThat(saved.getTimeSlotType()).isEqualTo(TimeSlotType.LUNCH_14H16H);
+    assertThat(exists).isTrue();
   }
 
-  private Booking createTestBooking(Customer customer, DiningTable table) {
-    Booking booking = new Booking();
-    booking.setCustomer(customer);
-    booking.setDate(LocalDate.of(2025, 7, 28));
-    booking.setDiningTable(table);
-    booking.setTimeSlotType(TimeSlotType.LUNCH_12H14H);
-    booking.setStatus("CONFIRMED");
+  @Test
+  void existsByDiningTableIdAndDateAndTimeSlotType_should_return_false_when_no_booking() {
+    // Given
+    DiningTable table = createAndPersistDiningTable();
+    LocalDate bookingDate = LocalDate.of(2025, 9, 10);
+    TimeSlotType timeSlot = TimeSlotType.LUNCH_12H14H;
 
-    return booking;
+    // When
+    boolean exists = bookingRepository.existsByDiningTableIdAndDateAndTimeSlotType(
+        table.getId(), bookingDate, timeSlot);
+
+    // Then
+    assertThat(exists).isFalse();
   }
 
-  private Booking createAndPersitBooking(Customer customer, DiningTable table) {
-    Booking booking = createTestBooking(customer, table);
-    return entityManager.persistAndFlush(booking);
+  @Test
+  void existsByDiningTableIdAndDateAndTimeSlotType_should_return_false_when_different_table() {
+    // Given
+    Customer customer = createAndPersistCustomer();
+    DiningTable table1 = createAndPersistDiningTable();
+    DiningTable table2 = createAndPersistDiningTable();
+    LocalDate bookingDate = LocalDate.of(2025, 9, 15);
+    TimeSlotType timeSlot = TimeSlotType.DINNER_21H23H;
+
+    Booking booking = createTestBooking(table1, customer, bookingDate, timeSlot);
+    entityManager.persistAndFlush(booking);
+
+    // When
+    boolean exists = bookingRepository.existsByDiningTableIdAndDateAndTimeSlotType(
+        table2.getId(), bookingDate, timeSlot);
+
+    // Then
+    assertThat(exists).isFalse();
   }
 
-  private Booking createTestBooking(LocalDate date, TimeSlotType timeSlotType, String status,
-      Customer customer, DiningTable table) {
+  @Test
+  void existsByDiningTableIdAndDateAndTimeSlotType_should_return_false_when_different_date() {
+    // Given
+    Customer customer = createAndPersistCustomer();
+    DiningTable table = createAndPersistDiningTable();
+    LocalDate existingDate = LocalDate.of(2025, 9, 20);
+    LocalDate differentDate = LocalDate.of(2025, 9, 21);
+    TimeSlotType timeSlot = TimeSlotType.LUNCH_14H16H;
 
-    Booking booking = new Booking();
-    booking.setCustomer(customer);
-    booking.setDate(date);
-    booking.setDiningTable(table);
-    booking.setTimeSlotType(timeSlotType);
-    booking.setStatus(status);
+    Booking booking = createTestBooking(table, customer, existingDate, timeSlot);
+    entityManager.persistAndFlush(booking);
 
-    return booking;
+    // When
+    boolean exists = bookingRepository.existsByDiningTableIdAndDateAndTimeSlotType(
+        table.getId(), differentDate, timeSlot);
+
+    // Then
+    assertThat(exists).isFalse();
   }
 
-  private Customer createTestCustomer() {
-    Customer customer = new Customer();
-    customer.setName("Testons");
-    customer.setEmail("test@test.com");
-    customer.setPhoneNumber("99-99-99-99-99");
-    return customer;
+  @Test
+  void existsByDiningTableIdAndDateAndTimeSlotType_should_return_false_when_different_time_slot() {
+    // Given
+    Customer customer = createAndPersistCustomer();
+    DiningTable table = createAndPersistDiningTable();
+    LocalDate bookingDate = LocalDate.of(2025, 9, 25);
+    TimeSlotType existingSlot = TimeSlotType.LUNCH_12H14H;
+    TimeSlotType differentSlot = TimeSlotType.LUNCH_14H16H;
+
+    Booking booking = createTestBooking(table, customer, bookingDate, existingSlot);
+    entityManager.persistAndFlush(booking);
+
+    // When
+    boolean exists = bookingRepository.existsByDiningTableIdAndDateAndTimeSlotType(
+        table.getId(), bookingDate, differentSlot);
+
+    // Then
+    assertThat(exists).isFalse();
   }
 
-  private DiningTable createTestDiningTable() {
-    Restaurant restaurant = createAndPersistRestaurant();
-    DiningTable diningTable = new DiningTable();
-    diningTable.setRestaurant(restaurant);
-    diningTable.setCapacity(4);
-    diningTable.setStatus(DiningTableStatus.AVAILABLE);
-    return diningTable;
+  @Test
+  void existsByDiningTableIdAndDateAndTimeSlotTypeAndIdNot_should_return_false_when_same_booking() {
+    // Given
+    Customer customer = createAndPersistCustomer();
+    DiningTable table = createAndPersistDiningTable();
+    LocalDate bookingDate = LocalDate.of(2025, 10, 1);
+    TimeSlotType timeSlot = TimeSlotType.DINNER_19H21H;
+
+    Booking existingBooking = createTestBooking(table, customer, bookingDate, timeSlot);
+    Booking saved = entityManager.persistAndFlush(existingBooking);
+
+    // When
+    boolean exists = bookingRepository.existsByDiningTableIdAndDateAndTimeSlotTypeAndIdNot(
+        table.getId(), bookingDate, timeSlot, saved.getId());
+
+    // Then
+    assertThat(exists).isFalse();
   }
 
-  private Restaurant createTestRestaurant() {
-    Restaurant restaurant = new Restaurant();
-    restaurant.setName("Test Restaurant");
-    restaurant.setAddress("123 Test St");
-    restaurant.setPhoneNumber("99-99-99-99-99");
-    return restaurant;
+  @Test
+  void existsByDiningTableIdAndDateAndTimeSlotTypeAndIdNot_should_return_true_when_other_booking_exists() {
+    // Given
+    Customer customer1 = createAndPersistCustomer();
+    Customer customer2 = createAndPersistCustomer("MarieTest", "test@test.com", "00-11-22-33-44");
+    DiningTable table = createAndPersistDiningTable();
+    LocalDate bookingDate = LocalDate.of(2025, 10, 5);
+    TimeSlotType timeSlot = TimeSlotType.DINNER_21H23H;
+
+    Booking booking1 = createTestBooking(table, customer1, bookingDate, timeSlot);
+    Booking saved1 = entityManager.persistAndFlush(booking1);
+
+    Booking booking2 = createTestBooking(table, customer2, bookingDate, TimeSlotType.DINNER_19H21H);
+    Booking saved2 = entityManager.persistAndFlush(booking2);
+
+    // When
+    boolean exists = bookingRepository.existsByDiningTableIdAndDateAndTimeSlotTypeAndIdNot(
+        table.getId(), bookingDate, TimeSlotType.DINNER_21H23H, saved2.getId());
+
+    // Then
+    assertThat(exists).isTrue();
   }
 
-  private Restaurant createAndPersistRestaurant() {
-    Restaurant restaurant = createTestRestaurant();
-    return entityManager.persistAndFlush(restaurant);
-  }
+  @Test
+  void existsByDiningTableIdAndDateAndTimeSlotTypeAndIdNot_should_return_false_when_no_other_booking() {
+    // Given
+    Customer customer = createAndPersistCustomer();
+    DiningTable table = createAndPersistDiningTable();
+    LocalDate bookingDate = LocalDate.of(2025, 10, 10);
+    TimeSlotType timeSlot = TimeSlotType.LUNCH_12H14H;
 
-  private DiningTable createAndPersistDiningTable() {
-    DiningTable diningTable = createTestDiningTable();
-    return entityManager.persistAndFlush(diningTable);
+    Booking booking = createTestBooking(table, customer, bookingDate, timeSlot);
+    Booking saved = entityManager.persistAndFlush(booking);
+
+    // When
+    boolean exists = bookingRepository.existsByDiningTableIdAndDateAndTimeSlotTypeAndIdNot(
+        table.getId(), bookingDate, timeSlot, saved.getId());
+
+    // Then
+    assertThat(exists).isFalse();
   }
 
   private Customer createAndPersistCustomer() {
     Customer customer = createTestCustomer();
     return entityManager.persistAndFlush(customer);
+  }
+
+  private Customer createAndPersistCustomer(String name, String email, String phoneNumber) {
+    Customer customer = createTestCustomer(name, email, phoneNumber);
+    return entityManager.persistAndFlush(customer);
+  }
+
+  private DiningTable createAndPersistDiningTable() {
+    Restaurant restaurant = createTestRestaurant();
+    Restaurant savedRestaurant = entityManager.persistAndFlush(restaurant);
+
+    DiningTable table = createTestDiningTable(savedRestaurant);
+    return entityManager.persistAndFlush(table);
   }
 }

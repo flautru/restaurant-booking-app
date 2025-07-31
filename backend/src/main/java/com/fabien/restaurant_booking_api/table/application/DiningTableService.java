@@ -61,4 +61,9 @@ public class DiningTableService {
     }
   }
 
+  public void validateExists(Long id) {
+    if (!diningTableRepository.existsById(id)) {
+      throw new EntityNotFoundException("Table not found with id : " + id);
+    }
+  }
 }

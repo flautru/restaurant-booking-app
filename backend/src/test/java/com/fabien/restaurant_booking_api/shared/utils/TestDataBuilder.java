@@ -1,6 +1,7 @@
 package com.fabien.restaurant_booking_api.shared.utils;
 
 import com.fabien.restaurant_booking_api.booking.domain.Booking;
+import com.fabien.restaurant_booking_api.booking.domain.BookingStatus;
 import com.fabien.restaurant_booking_api.booking.domain.TimeSlotType;
 import com.fabien.restaurant_booking_api.customer.domain.Customer;
 import com.fabien.restaurant_booking_api.restaurant.domain.Restaurant;
@@ -98,7 +99,7 @@ public class TestDataBuilder {
     booking.setCustomer(customer);
     booking.setDate(date);
     booking.setTimeSlotType(timeSlot);
-    booking.setStatus("CONFIRMED");
+    booking.setStatus(BookingStatus.FINISH);
     return booking;
   }
 
