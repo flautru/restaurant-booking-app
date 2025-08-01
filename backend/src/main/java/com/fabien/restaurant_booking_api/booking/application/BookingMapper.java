@@ -27,7 +27,14 @@ public class BookingMapper {
     }
 
     Customer customer = new Customer();
-    customer.setId(request.getCustomerId());
+
+    if (request.getCustomerId() != null) {
+      customer.setId(request.getCustomerId());
+    } else {
+      customer.setName(request.getCustomerName());
+      customer.setEmail(request.getCustomerEmail());
+      customer.setPhoneNumber(request.getCustomerPhoneNumber());
+    }
 
     DiningTable diningTable = new DiningTable();
     diningTable.setId(request.getDiningTableId());

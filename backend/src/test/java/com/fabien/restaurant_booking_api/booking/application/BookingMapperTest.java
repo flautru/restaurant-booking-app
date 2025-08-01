@@ -40,9 +40,9 @@ class BookingMapperTest {
     assertThat(response.id()).isEqualTo(1L);
     assertThat(response.table()).isEqualTo(diningTable);
     assertThat(response.customer()).isEqualTo(customer);
-    assertThat(response.localDate()).isEqualTo(LocalDate.of(2025, 7, 31));
+    assertThat(response.date()).isEqualTo(LocalDate.of(2025, 7, 31));
     assertThat(response.timeSlotType()).isEqualTo(TimeSlotType.DINNER_19H21H);
-    assertThat(response.bookingStatus()).isEqualTo(BookingStatus.FINISH);
+    assertThat(response.status()).isEqualTo(BookingStatus.FINISH);
 
   }
 
@@ -75,6 +75,28 @@ class BookingMapperTest {
   }
 
   @Test
+  void toEntity_should_map_request_to_dining_table_when_request_is_valid_and_new_customer() {
+    // Given
+    BookingRequest request = createTestRequestWithCustomer(1L, "New test", "new@test.com",
+        "00-00-00-00-00", TimeSlotType.DINNER_19H21H,
+        LocalDate.of(2025, 7, 31), BookingStatus.IN_PROGRESS);
+
+    // When
+    Booking booking = BookingMapper.toEntity(request);
+
+    // Then
+    assertThat(booking).isNotNull();
+    assertThat(booking.getDiningTable().getId()).isEqualTo(request.getDiningTableId());
+    assertThat(booking.getCustomer().getId()).isNull();
+    assertThat(booking.getCustomer().getName()).isEqualTo("New test");
+    assertThat(booking.getCustomer().getEmail()).isEqualTo("new@test.com");
+    assertThat(booking.getCustomer().getPhoneNumber()).isEqualTo("00-00-00-00-00");
+    assertThat(booking.getTimeSlotType()).isEqualTo(request.getTimeSlotType());
+    assertThat(booking.getDate()).isEqualTo(request.getDate());
+    assertThat(booking.getStatus()).isEqualTo(request.getStatus());
+  }
+
+  @Test
   void toEntity_should_return_null_when_request_is_null() {
     // Given
     DiningTableRequest request = null;
@@ -93,6 +115,21 @@ class BookingMapperTest {
     request.setCustomerId(customerId);
     request.setTimeSlotType(timeSlotType);
     request.setDate(localDate);
+    request.setStatus(status);
+
+    return request;
+  }
+
+  private BookingRequest createTestRequestWithCustomer(Long tableId, String customerName,
+      String customerEmail, String customerPhoneNumber, TimeSlotType timeSlotType, LocalDate date,
+      BookingStatus status) {
+    BookingRequest request = new BookingRequest();
+    request.setDiningTableId(tableId);
+    request.setCustomerName(customerName);
+    request.setCustomerEmail(customerEmail);
+    request.setCustomerPhoneNumber(customerPhoneNumber);
+    request.setTimeSlotType(timeSlotType);
+    request.setDate(date);
     request.setStatus(status);
 
     return request;

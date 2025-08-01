@@ -7,7 +7,7 @@ import com.fabien.restaurant_booking_api.table.domain.DiningTable;
 import java.time.LocalDate;
 
 public record BookingResponse(Long id, DiningTable table, Customer customer,
-                              TimeSlotType timeSlotType, LocalDate localDate,
-                              BookingStatus bookingStatus) {
+                              TimeSlotType timeSlotType, LocalDate date,
+                              BookingStatus status) {
 
 }
