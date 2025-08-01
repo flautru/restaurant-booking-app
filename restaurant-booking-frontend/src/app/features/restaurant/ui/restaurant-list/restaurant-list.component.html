@@ -1,0 +1,12 @@
+<div *ngIf="loading$ | async" class="spinner-container">
+  <mat-spinner diameter="40"></mat-spinner>
+</div>
+
+<h1>Restaurant List</h1>
+
+<mat-list *ngIf="!(loading$ | async)">
+  <app-restaurant-item
+    *ngFor="let restaurant of restaurants$ | async"
+    [restaurant]="restaurant"
+  ></app-restaurant-item>
+</mat-list>
