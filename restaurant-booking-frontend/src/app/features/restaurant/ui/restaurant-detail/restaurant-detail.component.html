@@ -1,0 +1,193 @@
+<!-- restaurant-detail.component.html -->
+<div class="container">
+
+  <!-- Loading State -->
+  <div *ngIf="loading$ | async" class="loading-container">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Chargement des détails...</p>
+  </div>
+
+  <!-- Restaurant Detail Content -->
+  <div *ngIf="!(loading$ | async) && (restaurant$ | async) as restaurant" class="restaurant-detail">
+
+    <!-- Header avec navigation -->
+    <div class="header-section">
+      <button mat-icon-button (click)="goBack()" class="back-button">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <h1 class="page-title">{{ restaurant.name }}</h1>
+    </div>
+
+    <!-- Main Content Card -->
+    <mat-card class="detail-card">
+
+      <!-- Header avec avatar et actions principales -->
+      <mat-card-header>
+        <mat-icon mat-card-avatar class="restaurant-avatar">restaurant</mat-icon>
+        <mat-card-title>{{ restaurant.name }}</mat-card-title>
+        <mat-card-subtitle>Informations détaillées</mat-card-subtitle>
+
+        <!-- Actions dans le header -->
+        <div class="header-actions">
+          <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Plus d'options">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="editRestaurant()">
+              <mat-icon>edit</mat-icon>
+              <span>Modifier</span>
+            </button>
+            <button mat-menu-item (click)="viewTables()">
+              <mat-icon>table_restaurant</mat-icon>
+              <span>Voir les tables</span>
+            </button>
+            <mat-divider></mat-divider>
+            <button mat-menu-item class="delete-action">
+              <mat-icon>delete</mat-icon>
+              <span>Supprimer</span>
+            </button>
+          </mat-menu>
+        </div>
+      </mat-card-header>
+
+      <!-- Content avec informations détaillées -->
+      <mat-card-content>
+        <div class="info-grid">
+
+          <!-- Informations de base -->
+          <div class="info-section">
+            <h3 class="section-title">
+              <mat-icon>info</mat-icon>
+              Informations générales
+            </h3>
+
+            <div class="info-list">
+              <div class="info-item">
+                <mat-icon class="info-icon">business</mat-icon>
+                <div class="info-content">
+                  <span class="info-label">Nom du restaurant</span>
+                  <span class="info-value">{{ restaurant.name }}</span>
+                </div>
+              </div>
+
+              <div class="info-item">
+                <mat-icon class="info-icon">location_on</mat-icon>
+                <div class="info-content">
+                  <span class="info-label">Adresse</span>
+                  <span class="info-value">{{ restaurant.address }}</span>
+                </div>
+              </div>
+
+              <div class="info-item">
+                <mat-icon class="info-icon">phone</mat-icon>
+                <div class="info-content">
+                  <span class="info-label">Téléphone</span>
+                  <span class="info-value">
+                    <a href="tel:{{ restaurant.phoneNumber }}" class="phone-link">
+                      {{ restaurant.phoneNumber || 'Non renseigné' }}
+                    </a>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Statistiques (placeholder pour futures features) -->
+          <div class="info-section">
+            <h3 class="section-title">
+              <mat-icon>analytics</mat-icon>
+              Statistiques
+            </h3>
+
+            <div class="stats-grid">
+              <mat-card class="stat-card">
+                <mat-card-content>
+                  <div class="stat-number">{{ getTableCount() }}</div>
+                  <div class="stat-label">Tables</div>
+                </mat-card-content>
+              </mat-card>
+
+              <mat-card class="stat-card">
+                <mat-card-content>
+                  <div class="stat-number">{{ getBookingCount() }}</div>
+                  <div class="stat-label">Réservations</div>
+                </mat-card-content>
+              </mat-card>
+
+              <mat-card class="stat-card">
+                <mat-card-content>
+                  <div class="stat-number">4.8★</div>
+                  <div class="stat-label">Note moyenne</div>
+                </mat-card-content>
+              </mat-card>
+            </div>
+          </div>
+
+        </div>
+      </mat-card-content>
+
+      <!-- Actions principales -->
+      <mat-card-actions class="main-actions">
+        <button mat-raised-button color="primary" (click)="viewTables()">
+          <mat-icon>table_restaurant</mat-icon>
+          Gérer les tables
+        </button>
+
+        <button mat-raised-button color="accent" (click)="viewBookings()">
+          <mat-icon>event</mat-icon>
+          Voir les réservations
+        </button>
+
+        <button mat-stroked-button (click)="editRestaurant()">
+          <mat-icon>edit</mat-icon>
+          Modifier
+        </button>
+      </mat-card-actions>
+
+    </mat-card>
+
+    <!-- Quick Actions Cards -->
+    <div class="quick-actions">
+      <h2 class="section-title">Actions rapides</h2>
+
+      <div class="actions-grid">
+        <mat-card class="action-card" (click)="viewTables()">
+          <mat-card-content>
+            <mat-icon class="action-icon">table_restaurant</mat-icon>
+            <h3>Tables</h3>
+            <p>Gérer les tables du restaurant</p>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card class="action-card" (click)="viewBookings()">
+          <mat-card-content>
+            <mat-icon class="action-icon">event</mat-icon>
+            <h3>Réservations</h3>
+            <p>Consulter les réservations</p>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card class="action-card" (click)="viewReports()">
+          <mat-card-content>
+            <mat-icon class="action-icon">analytics</mat-icon>
+            <h3>Rapports</h3>
+            <p>Statistiques et analyses</p>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Not Found State -->
+  <div *ngIf="!(loading$ | async) && !(restaurant$ | async)" class="not-found">
+    <mat-icon class="not-found-icon">restaurant_off</mat-icon>
+    <h2>Restaurant introuvable</h2>
+    <p>Le restaurant demandé n'existe pas ou a été supprimé.</p>
+    <button mat-raised-button color="primary" (click)="goBack()">
+      <mat-icon>arrow_back</mat-icon>
+      Retour à la liste
+    </button>
+  </div>
+
+</div>

@@ -54,6 +54,11 @@ public class DiningTableService {
     diningTableRepository.deleteById(id);
   }
 
+  public List<DiningTable> findByRestaurantId(Long restaurantId) {
+    restaurantService.validateExists(restaurantId);
+    return diningTableRepository.findByRestaurantId(restaurantId);
+  }
+
   private void validateCapacity(Integer capacity) {
     if (capacity < minCapacity || capacity > maxCapacity) {
       throw new IllegalArgumentException(

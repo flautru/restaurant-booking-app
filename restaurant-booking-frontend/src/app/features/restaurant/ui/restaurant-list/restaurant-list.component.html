@@ -1,12 +1,65 @@
-<div *ngIf="loading$ | async" class="spinner-container">
-  <mat-spinner diameter="40"></mat-spinner>
+<!-- restaurant-list.component.html -->
+<div class="container">
+  <!-- Header avec titre et search -->
+  <div class="header-section">
+    <h1 class="page-title">🍽️ Nos Restaurants</h1>
+
+    <!-- Search bar réactive qu'on va créer -->
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-label>Rechercher un restaurant</mat-label>
+      <input matInput
+             placeholder="Nom, adresse..."
+             #searchInput
+             (input)="onSearch(searchInput.value)">
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+  </div>
+
+  <!-- Loading spinner -->
+  <div *ngIf="loading$ | async" class="loading-container">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Chargement des restaurants...</p>
+  </div>
+
+  <!-- Restaurant cards grid -->
+  <div *ngIf="!(loading$ | async)" class="restaurants-grid">
+    <mat-card *ngFor="let restaurant of filteredRestaurants$ | async"
+              class="restaurant-card"
+              (click)="selectRestaurant(restaurant)">
+
+      <mat-card-header>
+        <mat-icon mat-card-avatar class="restaurant-icon">restaurant</mat-icon>
+        <mat-card-title>{{ restaurant.name }}</mat-card-title>
+        <mat-card-subtitle>{{ restaurant.address }}</mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        <div class="restaurant-info">
+          <div class="info-item">
+            <mat-icon>phone</mat-icon>
+            <span>{{ restaurant.phoneNumber || 'Non renseigné' }}</span>
+          </div>
+        </div>
+      </mat-card-content>
+
+      <mat-card-actions align="end">
+        <button mat-button color="primary">
+          <mat-icon>visibility</mat-icon>
+          Voir détails
+        </button>
+        <button mat-raised-button color="accent">
+          <mat-icon>event</mat-icon>
+          Réserver
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+
+  <!-- Empty state -->
+  <div *ngIf="!(loading$ | async) && (filteredRestaurants$ | async)?.length === 0"
+       class="empty-state">
+    <mat-icon class="empty-icon">search_off</mat-icon>
+    <h2>Aucun restaurant trouvé</h2>
+    <p>Essayez de modifier votre recherche</p>
+  </div>
 </div>
-
-<h1>Restaurant List</h1>
-
-<mat-list *ngIf="!(loading$ | async)">
-  <app-restaurant-item
-    *ngFor="let restaurant of restaurants$ | async"
-    [restaurant]="restaurant"
-  ></app-restaurant-item>
-</mat-list>

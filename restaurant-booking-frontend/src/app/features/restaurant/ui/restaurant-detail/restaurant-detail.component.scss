@@ -1,0 +1,468 @@
+// restaurant-detail.component.scss
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+// ===== LOADING STATE =====
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  gap: 1rem;
+
+  p {
+    color: #666;
+    font-size: 1.1rem;
+  }
+}
+
+// ===== HEADER SECTION =====
+.header-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+
+  .back-button {
+    background-color: #f5f5f5;
+    color: #333;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background-color: #e0e0e0;
+      transform: scale(1.05);
+    }
+
+    mat-icon {
+      font-size: 1.5rem;
+    }
+  }
+
+  .page-title {
+    font-size: 2.5rem;
+    font-weight: 300;
+    color: #333;
+    margin: 0;
+    flex: 1;
+
+    @media (max-width: 768px) {
+      font-size: 2rem;
+    }
+  }
+}
+
+// ===== DETAIL CARD PRINCIPAL =====
+.detail-card {
+  margin-bottom: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+
+  // Header avec avatar et menu
+  .mat-mdc-card-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 2rem;
+    position: relative;
+
+    .restaurant-avatar {
+      background-color: rgba(255, 255, 255, 0.2);
+      color: white;
+      width: 64px;
+      height: 64px;
+      font-size: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .mat-mdc-card-title {
+      color: white;
+      font-size: 1.8rem;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
+
+    .mat-mdc-card-subtitle {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 1rem;
+    }
+
+    .header-actions {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+
+      button {
+        color: white;
+
+        &:hover {
+          background-color: rgba(255, 255, 255, 0.1);
+        }
+      }
+    }
+  }
+
+  // Content avec informations
+  .mat-mdc-card-content {
+    padding: 2rem;
+  }
+
+  // Actions principales
+  .main-actions {
+    padding: 1rem 2rem 2rem 2rem;
+    gap: 1rem;
+    flex-wrap: wrap;
+
+    button {
+      border-radius: 8px;
+      padding: 0.75rem 1.5rem;
+
+      mat-icon {
+        margin-right: 0.5rem;
+      }
+
+      &.mat-mdc-raised-button {
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
+
+        &:hover {
+          box-shadow: 0 6px 12px rgba(0, 0, 0, 0.24);
+          transform: translateY(-1px);
+        }
+      }
+    }
+  }
+}
+
+// ===== INFO GRID =====
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
+
+.info-section {
+  .section-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1.3rem;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #f0f0f0;
+
+    mat-icon {
+      color: #667eea;
+      font-size: 1.5rem;
+    }
+  }
+}
+
+// ===== INFO LIST =====
+.info-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.info-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1rem;
+  background-color: #fafafa;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: #f0f0f0;
+    transform: translateX(4px);
+  }
+
+  .info-icon {
+    color: #667eea;
+    font-size: 1.5rem;
+    margin-top: 0.125rem;
+    flex-shrink: 0;
+  }
+
+  .info-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    flex: 1;
+
+    .info-label {
+      font-size: 0.9rem;
+      color: #666;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .info-value {
+      font-size: 1.1rem;
+      color: #333;
+      font-weight: 400;
+
+      .phone-link {
+        color: #667eea;
+        text-decoration: none;
+        transition: color 0.3s ease;
+
+        &:hover {
+          color: #5a67d8;
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+}
+
+// ===== STATISTICS GRID =====
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 1rem;
+}
+
+.stat-card {
+  text-align: center;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  color: white;
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+  }
+
+  .mat-mdc-card-content {
+    padding: 1.5rem 1rem;
+
+    .stat-number {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      opacity: 0.9;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+  }
+}
+
+// ===== QUICK ACTIONS =====
+.quick-actions {
+  .section-title {
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: #333;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+
+    &::before {
+      content: '';
+      width: 4px;
+      height: 2rem;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 2px;
+    }
+  }
+}
+
+.actions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.action-card {
+  cursor: pointer;
+  border-radius: 16px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 2px solid transparent;
+
+  &:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+    border-color: #667eea;
+  }
+
+  .mat-mdc-card-content {
+    text-align: center;
+    padding: 2rem;
+
+    .action-icon {
+      font-size: 3rem;
+      width: 3rem;
+      height: 3rem;
+      color: #667eea;
+      margin-bottom: 1rem;
+    }
+
+    h3 {
+      font-size: 1.3rem;
+      font-weight: 500;
+      color: #333;
+      margin-bottom: 0.5rem;
+    }
+
+    p {
+      color: #666;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      margin: 0;
+    }
+  }
+}
+
+// ===== NOT FOUND STATE =====
+.not-found {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: #666;
+
+  .not-found-icon {
+    font-size: 5rem;
+    width: 5rem;
+    height: 5rem;
+    color: #ddd;
+    margin-bottom: 1.5rem;
+  }
+
+  h2 {
+    font-size: 2rem;
+    font-weight: 400;
+    margin-bottom: 1rem;
+    color: #555;
+  }
+
+  p {
+    font-size: 1.1rem;
+    color: #777;
+    margin-bottom: 2rem;
+    line-height: 1.6;
+  }
+
+  button {
+    padding: 0.75rem 2rem;
+    border-radius: 8px;
+
+    mat-icon {
+      margin-right: 0.5rem;
+    }
+  }
+}
+
+// ===== MENU STYLES =====
+.delete-action {
+  color: #f44336 !important;
+
+  mat-icon {
+    color: #f44336 !important;
+  }
+}
+
+// ===== RESPONSIVE =====
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .detail-card .mat-mdc-card-header {
+    padding: 1.5rem;
+
+    .mat-mdc-card-title {
+      font-size: 1.5rem;
+    }
+  }
+
+  .detail-card .mat-mdc-card-content {
+    padding: 1.5rem;
+  }
+
+  .detail-card .main-actions {
+    padding: 1rem 1.5rem 1.5rem 1.5rem;
+
+    button {
+      flex: 1;
+      min-width: 0;
+    }
+  }
+
+  .actions-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .header-section .page-title {
+    font-size: 1.5rem;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .action-card .mat-mdc-card-content {
+    padding: 1.5rem;
+  }
+}
+
+// ===== ANIMATIONS =====
+.restaurant-detail {
+  animation: slideInUp 0.6s ease-out;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Animation pour les cartes d'actions
+.action-card {
+  animation: fadeInScale 0.6s ease-out;
+  animation-fill-mode: both;
+
+  &:nth-child(1) { animation-delay: 0.1s; }
+  &:nth-child(2) { animation-delay: 0.2s; }
+  &:nth-child(3) { animation-delay: 0.3s; }
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

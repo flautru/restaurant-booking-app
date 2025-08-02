@@ -69,4 +69,14 @@ public class DiningTableController {
     diningTableService.deleteById(id);
     return ResponseEntity.noContent().build();
   }
+
+  @GetMapping("/restaurant/{restaurantId}")
+  public ResponseEntity<List<DiningTableResponse>> findByRestaurantId(
+      @PathVariable Long restaurantId) {
+    List<DiningTableResponse> tableResponses = diningTableService.findByRestaurantId(restaurantId)
+        .stream()
+        .map(DiningTableMapper::toResponse)
+        .toList();
+    return ResponseEntity.ok(tableResponses);
+  }
 }
