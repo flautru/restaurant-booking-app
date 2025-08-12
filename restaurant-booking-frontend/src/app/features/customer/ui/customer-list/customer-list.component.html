@@ -1,0 +1,145 @@
+<!-- customer-list.component.html -->
+<div class="container">
+
+  <!-- Header Section avec titre et actions -->
+  <div class="header-section">
+    <div class="title-section">
+      <h1 class="page-title">👥 Gestion des Clients</h1>
+      <p class="page-subtitle">Gérez vos clients et leurs informations</p>
+    </div>
+
+    <button mat-raised-button color="primary" (click)="addCustomer()" class="add-button">
+      <mat-icon>person_add</mat-icon>
+      Nouveau Client
+    </button>
+  </div>
+
+  <!-- Search Section -->
+  <div class="search-section">
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-label>Rechercher un client</mat-label>
+      <input matInput
+             placeholder="Nom, email ou téléphone..."
+             #searchInput
+             (input)="onSearch(searchInput.value)">
+      <mat-icon matSuffix color="primary">search</mat-icon>
+    </mat-form-field>
+
+    <!-- Stats rapides -->
+    <div class="stats-chips">
+      <mat-chip-set>
+        <mat-chip>
+          <mat-icon matChipAvatar>people</mat-icon>
+          {{ (customers$ | async)?.length || 0 }} clients
+        </mat-chip>
+        <mat-chip>
+          <mat-icon matChipAvatar>filter_list</mat-icon>
+          {{ (filteredCustomers$ | async)?.length || 0 }} résultats
+        </mat-chip>
+      </mat-chip-set>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading$ | async" class="loading-container">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Chargement des clients...</p>
+  </div>
+
+  <!-- Customers List -->
+  <div *ngIf="!(loading$ | async)" class="customers-container">
+
+    <!-- Liste des clients -->
+    <div class="customers-list">
+      <mat-card
+        *ngFor="let customer of filteredCustomers$ | async; trackBy: trackByCustomerId"
+        class="customer-card"
+        (click)="selectCustomer(customer)">
+
+        <!-- Header avec avatar et nom -->
+        <div class="customer-header">
+          <div class="customer-avatar">
+            <mat-icon>person</mat-icon>
+          </div>
+
+          <div class="customer-main-info">
+            <h3 class="customer-name">{{ customer.name }}</h3>
+            <p class="customer-email">
+              <mat-icon class="info-icon">email</mat-icon>
+              {{ customer.email || 'Email non renseigné' }}
+            </p>
+          </div>
+
+          <div class="customer-actions">
+            <button mat-icon-button (click)="selectCustomer(customer); $event.stopPropagation()">
+              <mat-icon>chevron_right</mat-icon>
+            </button>
+          </div>
+        </div>
+
+        <!-- Footer avec téléphone et actions rapides -->
+        <div class="customer-footer">
+          <div class="customer-phone">
+            <mat-icon class="info-icon">phone</mat-icon>
+            <span>{{ customer.phoneNumber || 'Téléphone non renseigné' }}</span>
+          </div>
+
+          <div class="quick-actions">
+            <a [href]="'tel:' + customer.phoneNumber"
+               *ngIf="customer.phoneNumber"
+               mat-icon-button
+               matTooltip="Appeler"
+               (click)="$event.stopPropagation()">
+              <mat-icon>call</mat-icon>
+            </a>
+
+            <a [href]="'mailto:' + customer.email"
+               *ngIf="customer.email"
+               mat-icon-button
+               matTooltip="Envoyer un email"
+               (click)="$event.stopPropagation()">
+              <mat-icon>mail</mat-icon>
+            </a>
+          </div>
+        </div>
+      </mat-card>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!(loading$ | async) && (filteredCustomers$ | async)?.length === 0"
+       class="empty-state">
+
+    <!-- Si pas de résultats de recherche -->
+    <div *ngIf="hasCustomers$ | async" class="no-results">
+      <mat-icon class="empty-icon">search_off</mat-icon>
+      <h2>Aucun client trouvé</h2>
+      <p>Essayez de modifier votre recherche</p>
+      <button mat-stroked-button (click)="searchInput.value = ''; onSearch('')">
+        <mat-icon>clear</mat-icon>
+        Effacer la recherche
+      </button>
+    </div>
+
+    <!-- Si vraiment aucun client -->
+    <div *ngIf="hasNoCustomers$ | async" class="no-customers">
+      <mat-icon class="empty-icon">person_add</mat-icon>
+      <h2>Aucun client enregistré</h2>
+      <p>Commencez par ajouter votre premier client</p>
+      <button mat-raised-button color="primary" (click)="addCustomer()">
+        <mat-icon>person_add</mat-icon>
+        Ajouter un Client
+      </button>
+    </div>
+  </div>
+
+  <!-- Floating Action Button (Mobile) -->
+  <button mat-fab
+          color="primary"
+          class="fab-add"
+          (click)="addCustomer()"
+          matTooltip="Ajouter un client">
+    <mat-icon>add</mat-icon>
+  </button>
+
+</div>
