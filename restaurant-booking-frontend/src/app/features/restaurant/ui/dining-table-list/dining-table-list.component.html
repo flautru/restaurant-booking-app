@@ -1,0 +1,73 @@
+<!-- table-list.component.html -->
+<div class="container">
+  <!-- Header avec titre et search -->
+  <div class="header-section" *ngIf="activeRestaurant$ | async as restaurant">
+    <!-- <button mat-icon-button (click)="goBack()" class="back-button">
+      <mat-icon>arrow_back</mat-icon>
+    </button> -->
+    <h1 class="page-title">
+      Tables de {{ restaurant.name }}
+    </h1>
+    <p class="restaurant-info">
+      📍 {{ restaurant.address }}
+    </p>
+  </div>
+    <!-- Search bar réactive qu'on va créer -->
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-label>Rechercher une table</mat-label>
+      <input matInput
+             placeholder="capacité"
+             #searchInput
+             (input)="onSearch(searchInput.value)">
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+  </div>
+
+  <!-- Loading spinner -->
+  <div *ngIf="loading$ | async" class="loading-container">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Chargement des tables...</p>
+  </div>
+
+  <!-- Restaurant cards grid -->
+  <div *ngIf="!(loading$ | async)" class="tables-grid">
+    <mat-card *ngFor="let table of filteredTables$ | async"
+              class="table-card"
+              (click)="selectTable(table)">
+
+      <mat-card-header>
+        <mat-icon mat-card-avatar class="table-icon">table</mat-icon>
+        <mat-card-title>{{ table.capacity }}</mat-card-title>
+        <mat-card-subtitle>{{ table.capacity }}</mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        <div class="restaurant-info">
+          <div class="info-item">
+            <mat-icon>phone</mat-icon>
+            <span>{{ table.restaurant.phoneNumber }}</span>
+          </div>
+        </div>
+      </mat-card-content>
+
+      <mat-card-actions align="end">
+        <!-- <button mat-button color="primary">
+          <mat-icon>visibility</mat-icon>
+          Voir détails
+        </button> -->
+        <button mat-raised-button color="accent">
+          <mat-icon>event</mat-icon>
+          Réserver
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+
+  <!-- Empty state -->
+  <div *ngIf="!(loading$ | async) && (filteredTables$ | async)?.length === 0"
+       class="empty-state">
+    <mat-icon class="empty-icon">search_off</mat-icon>
+    <h2>Aucune tables trouvé</h2>
+    <p>Essayez de modifier votre recherche</p>
+  </div>
+

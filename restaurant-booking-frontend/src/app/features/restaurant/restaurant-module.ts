@@ -13,9 +13,10 @@ import { MatInputModule } from '@angular/material/input';
 import { RestaurantDetailComponent } from './ui/restaurant-detail/restaurant-detail.component';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
+import { DiningTableListComponent } from './ui/dining-table-list/dining-table-list.component';
 
 @NgModule({
-  declarations: [RestaurantListComponent, RestaurantDetailComponent],
+  declarations: [RestaurantListComponent, RestaurantDetailComponent, DiningTableListComponent],
   imports: [
     CommonModule,
     RestaurantRoutingModule,

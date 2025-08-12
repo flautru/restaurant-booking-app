@@ -62,7 +62,7 @@ export class RestaurantDetailComponent implements OnInit, OnDestroy {
   viewTables(): void {
     const restaurantId = this.restaurantQuery.getActiveId();
     console.log('🪑 View tables for restaurant:', restaurantId);
-    // TODO: Navigation vers /restaurants/:id/tables
+    this.router.navigate(['/restaurants', restaurantId,'tables']);
   }
 
   viewBookings(): void {
@@ -78,7 +78,7 @@ export class RestaurantDetailComponent implements OnInit, OnDestroy {
 
   // Placeholder methods pour les stats
   getTableCount(): number {
-    return this.diningTableQuery.getCount(); 
+    return this.diningTableQuery.getCount();
   }
 
   getBookingCount(): number {
